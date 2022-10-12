@@ -1,0 +1,39 @@
+---
+- name: Clone a virtual machine from Linux template and customize
+  hosts: localhost
+  gather_facts: no
+  ignore_errors: yes
+  tasks:
+  - name: Clone it
+    community.vmware.vmware_guest:
+      validate_certs: no
+      hostname: "{{ hostname }}"
+      esxi_hostname: "{{ esxi_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      datacenter: "{{ datacenter }}"
+      state: present
+      folder: /
+      datastore: "{{ datastore }}"
+      template: "{{ template }}"
+      name: "{{ targetvm }}"
+      networks:
+        - name: "{{ network }}"
+          ip: "{{ ipaddr }}"
+          netmask: "{{ netmask }}"
+          gateway: "{{ gateway }}"
+      hardware:
+        memory_mb: "{{ memory }}"
+        num_cpus: "{{ cpus }}"
+        hotadd_cpu: yes
+        hotadd_memory: yes
+      wait_for_ip_address: yes
+      customization:
+        domain: "cotitivi.com"
+        dns_servers:
+          - 10.32.65.11
+          - 10.32.65.12
+        dns_suffix:
+          - cotiviti.com
+          - ihtech.com
+    delegate_to: localhost
